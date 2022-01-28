@@ -1,3 +1,6 @@
+# Silence zsh warning
+export BASH_SILENCE_DEPRECATION_WARNING=1
+
 # ~~Make terminal show git branch~~
 
 COLOR_LIGHT_GREEN="\[\033[1;32m\]"
@@ -18,11 +21,6 @@ PS1="$COLOR_WHITE\w$COLOR_LIGHT_RED\$(parse_git_branch) $COLOR_LIGHT_YELLOW\$ $C
 # Requires running: curl -L https://iterm2.com/shell_integration/bash -o ~/.iterm2_shell_integration.bash
 test -e "${HOME}/.iterm2_shell_integration.bash" && source "${HOME}/.iterm2_shell_integration.bash"
 
-
-
-
-
-
 # ~~Reload bash configs on demand~~
 
 source_from_file() {
@@ -36,3 +34,6 @@ rebash () {
       source_from_file $bashfile
   done
 }
+
+# Homebrew
+eval "$(/opt/homebrew/bin/brew shellenv)"
