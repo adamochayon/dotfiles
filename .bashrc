@@ -14,8 +14,8 @@ function gf() {
 alias regit="gf && git reset --hard FETCH_HEAD"
 alias rebase="gf && git rebase FETCH_HEAD"
 alias gitam="git commit --amend --no-edit"
-alias gitpr="gh pr create -f -l "Merge When Ready" -l "Ready For Review"
-alias gst="git stash push -m ""
+alias gitpr="gh pr create -f"
+alias gst="git stash push -m "
 alias gpop="git stash pop"
 alias gitlg="git log --graph --pretty=format:'%Cred%h%Creset %<(15,trunc)%an %s - %Creset %C(yellow)%d%Creset %Cgreen(%cr)%Creset' --abbrev-commit --date=relative"
 # Rewind last commit
