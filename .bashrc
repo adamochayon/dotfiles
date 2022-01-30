@@ -1,3 +1,6 @@
+# Bind inputrc for all input modifications
+bind -f ~/.inputrc
+
 # ~~Aliases~~
 
 alias md=mkdir
@@ -15,7 +18,7 @@ alias regit="gf && git reset --hard FETCH_HEAD"
 alias rebase="gf && git rebase FETCH_HEAD"
 alias gitam="git commit --amend --no-edit"
 alias gitpr="gh pr create -f"
-alias gst="git stash push -m "
+alias gst="git stash push -m"
 alias gpop="git stash pop"
 alias gitlg="git log --graph --pretty=format:'%Cred%h%Creset %<(15,trunc)%an %s - %Creset %C(yellow)%d%Creset %Cgreen(%cr)%Creset' --abbrev-commit --date=relative"
 # Rewind last commit

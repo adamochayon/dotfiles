@@ -1,0 +1,10 @@
+# Search history based on current prefix
+"\e[A": history-search-backward
+"\e[B": history-search-forward
+
+set completion-ignore-case On
+# Expands tilde when completing
+set expand-tilde on
+# Improves tab autocomplete to both complete what it can and show ambiguous
+set show-all-if-ambiguous on
+
