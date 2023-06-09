@@ -1,6 +1,11 @@
 # Silence zsh warning
 export BASH_SILENCE_DEPRECATION_WARNING=1
 
+if [ ! -f ~/.git-completion.bash ]; then
+  curl https://raw.githubusercontent.com/git/git/master/contrib/completion/git-completion.bash -o ~/.git-completion.bash
+fi
+source ~/.git-completion.bash
+
 # ~~Make terminal show git branch~~
 
 COLOR_LIGHT_GREEN="\[\033[1;32m\]"
@@ -10,7 +15,7 @@ COLOR_LIGHT_RED="\[\033[1;31m\]"
 COLOR_LIGHT_YELLOW="\[\033[1;33m\]"
 
 function parse_git_branch {
-git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ (\1)/'
+  git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ (\1)/'
 }
 
 PS1="$COLOR_WHITE\w$COLOR_LIGHT_RED\$(parse_git_branch) $COLOR_LIGHT_YELLOW\$ $COLOR_WHITE"
