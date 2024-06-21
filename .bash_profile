@@ -1,6 +1,7 @@
 # Silence zsh warning
 export BASH_SILENCE_DEPRECATION_WARNING=1
 
+# Setup git completion
 if [ ! -f ~/.git-completion.bash ]; then
   curl https://raw.githubusercontent.com/git/git/master/contrib/completion/git-completion.bash -o ~/.git-completion.bash
 fi
