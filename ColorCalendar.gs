@@ -7,29 +7,67 @@ function ColorEvents() {
   var calendars = CalendarApp.getAllOwnedCalendars();
   Logger.log("Found " + calendars.length + " calendars: " + calendars.map(c => c.getName()).join(", "));
 
-  for (var i=0; i < calendars.length; i++) {
-    var calendar = calendars[i];
+  var eTitle = (e) => e.getTitle().toLowerCase();
+  var eGuestEmails = (e) => e.getGuestList().map(g => g.getEmail());
+  var includesAny = (searchList, values) => values.some((value) => searchList.includes(value))
+
+  // Order is prioritized - first one to apply will count
+  const mappings = [
+    {
+      description: "One on Ones",
+      color: CalendarApp.EventColor.MAUVE,
+      predicate: (e) => includesAny(eTitle(e), ["1:1", "1on1", "1 on 1", "💡", "/ Adam", "Adam /"])
+    },
+    {
+      description: "Commuting",
+      color: CalendarApp.EventColor.PALE_RED,
+      predicate: (e) => includesAny(eTitle(e), ["commute", "travel", "flight", "✈️", "train", "🚆"])
+    },
+    {
+      description: "With Externals",
+      color: CalendarApp.EventColor.GREEN,
+      predicate: (e) => 
+        eGuestEmails(e).some((email) => !email.toLowerCase().includes("COMPANY DOMAIN"))
+    },
+    {
+      description: "Clients and Demos",
+      color: CalendarApp.EventColor.GREEN,
+      predicate: (e) => includesAny(eTitle(e), ["client", "demo"])
+    },
+    {
+      description: "Team Events",
+      color: CalendarApp.EventColor.PALE_GREEN,
+      predicate: (e) => eTitle(e)[0] === "#" || includesAny(eGuestEmails(e), ["TEAM_EMAILS"])
+    },
+    {
+      description: "Important / Execs",
+      color: CalendarApp.EventColor.RED,
+      predicate: (e) => 
+        eTitle(e)[0] === "!" 
+        || includesAny(eGuestEmails(e), ["EXEC@EMAIL.COM"])
+    },
+    {
+      description: "Others",
+      color: CalendarApp.EventColor.GRAY,
+      predicate: (e) => includesAny(eTitle(e), ["lunch", "happy hour", "game night"])
+    },
+  ];
+
+  for (var calendar of calendars) {
     var events = calendar.getEvents(start, end);
     Logger.log("Found " + events.length + " events in " + calendar.getName() + " in range " + start + "-" + end);
-    for (var j=0; j<events.length; j++) {
-      var e = events[j];
-      var guestEmails = e.getGuestList().map(g => g.getEmail());
-      var title = e.getTitle().toLowerCase();
-      if (["interview", "debrief"].some((name) => title.includes(name))) {
-        e.setColor(CalendarApp.EventColor.PALE_RED);
-      } else if (["1:1", "1on1", "1 on 1", "💡", "/ Adam", "Adam /"].some((name) => title.toLowerCase().includes(name))) {
-        e.setColor(CalendarApp.EventColor.MAUVE);
-      } else if (
-        title[0] === "!" || (["SOME_EXEC@email.com"].some((email) => guestEmails.some(guestEmail => guestEmail.includes(email)))
-        && !['EXCLUDE TITLES'].some((name) => title.toLowerCase().includes(name)))
-      ) {
-        e.setColor(CalendarApp.EventColor.RED);
-      } else if (title[0] === '#' || guestEmails.includes('MY_TEAM')) {
-        e.setColor(CalendarApp.EventColor.PALE_GREEN);
-      } else if (["🌱", "GROWTH"].some((name) => title.toLowerCase().includes(name))) {
-        e.setColor(CalendarApp.EventColor.GREEN);
-      } else if (["lunch", "happy hour", "game night"].some((name) => title.toLowerCase().includes(name))) {
-        e.setColor(CalendarApp.EventColor.GRAY);
+
+    for (var e of events) {
+      if (e.getColor().length > 0) {
+        // Ignore events with existing colors to allow for manual override
+        continue;
+      }
+
+      for (var mapping of mappings.slice().reverse()) {
+        if (mapping.predicate(e)) {
+          e.setColor(mapping.color);
+          continue;
+        }
       }
     }
   }
